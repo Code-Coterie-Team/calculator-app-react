@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 
 
@@ -6,15 +7,22 @@ import { useState } from "react"
 function App(){
     const [input,setInput]=useState('');
     const [result,setResult]=useState('');
-  
-
+    const [showResult,setShow]=useState(false);
+    
+    
     const handelClick=(value)=>{
-      setInput((prev)=>prev+value);
+      if (showResult){
+        setInput(result+value);
+        setShow(false);
+      }else{
+        setInput((prev)=>prev+value);
+      }
     };
     
     const clearAll=()=>{
       setInput('');
       setResult('');
+      setShow(false);
     }
 
     const clearLast=()=>{
@@ -23,39 +31,47 @@ function App(){
     }
 
     const handelPower=()=>{
-      const number = parseFloat(input);
-      if (!isNaN(number)) {
-          const poweredResult = Math.pow(number, 2); 
-          setResult(poweredResult);
-          setInput(poweredResult);
-          
-      } else {
-          setResult('Error'); 
-      }
-  }
+        
+        const newResult=handelResult();
+        const powerResult=Math.pow(newResult,2);
+        setResult(powerResult);
+        setInput(String(powerResult));
 
+        setShow(true);
+          
+    }
+  
+  const divideOne=()=>{
+    const newDivide=handelResult();
+    const divide=(1/newDivide);
+    setResult(divide);
+    setInput(String(divide));
+  }
   
   const handelAbsolute=() =>{ 
-      const absolute=parseFloat(input);
-      if(!isNaN(absolute)){
-        const absoluteResult = Math.abs(number);
-        setResult(absoluteResult);
-        setInput(absoluteResult);
-      }
-      else{
-        setResult('Error'); 
-      }
+        
+    }
+  const sqrtFunction=()=>{
+     const newInput=handelResult();
+     const sqrtResult=Math.sqrt(newInput);
+     setResult(sqrtResult);
+     setInput(String(sqrtResult));
+     setShow(true)
   }
     const handelResult=() =>{
         const inputString= input.match(/(\d+(\.\d+)?|\*|\+|\-|\+|\/)/g).map(item => item.trim());
-        if (!inputString) return setResult('Error');
         const finalResult=evaluateExpression(inputString);
         setResult(finalResult);
-        setInput(finalResult);
+        setShow(true);
+        return finalResult;
+        
       }
     const evaluateExpression=(array) =>{
 
       const len=array.length;
+      if(len===1){
+        return array[0]
+      }
       while(len > 1 ){
           const indexMultiply=array.indexOf('*');
           const indexDivide=array.indexOf('/');
@@ -99,8 +115,8 @@ function App(){
               continue;
           }
           return array[0];
-          
-      }
+        }
+        
   }
     
     return(
@@ -108,11 +124,10 @@ function App(){
       <div className="flex flex-col gap-12 h-full w-full items-center  p-4">
         <div className="text-center">AJ CalculatorReact js</div>
         <div className="bg-black h-max min-w-min w-6/12 flex  flex-col p-6  gap-3 items-center "> 
-          <div   className= "bg-gray flex  h-20 w-full justify-center" >
-            <input  type="text" value={input} className="bg-gray  w-11/12"/>
-            <span className="text-green text-center ">{result}</span>
+          <div value={input} className="bg-gray h-12 w-11/12  p-2"> {input} {showResult &&`= ${result}`}
           </div>
-          <div className="grid grid-cols-4 w-full gap-3">
+          
+          <div className="grid grid-cols-4 w-10/12 gap-3">
             <button  className="bg-purple rounded  text-white" ></button>
             <button className="bg-purple rounded  text-white" ></button>
             <button onClick={clearAll} className="bg-purple rounded  text-white" >AC</button>
@@ -122,17 +137,17 @@ function App(){
             <button className="bg-green rounded  text-white">m-</button>
             <button className="bg-green rounded  text-white">mr</button>
           </div>
-          <div className=" grid  grid-cols-5 h-5/6 w-full gap-2">
+          <div className=" grid  grid-cols-5  w-10/12 gap-2">
             
             {
               ['7','8','9'].map((item) =>(
-                <button key={item} onClick={()=> handelClick(item)} className=" bg-blue text-center text-white rounded hover:bg-blue-600" >{item}</button>
+                <button key={item} onClick={()=> handelClick(item)} className=" bg-blue text-center text-white rounded  hover: drop-shadow-lg active:bg-red" >{item}</button>
               ))
             }
             
             {
               ["/","√"].map((item)=>(
-              <button key={item} onClick={() => handelClick(item)} className="bg-darkgray text-center text-white rounded  ">{item}</button>
+              <button key={item} onClick={ item==="√" ? sqrtFunction  :() => handelClick(item)} className="bg-darkgray text-center text-white rounded  ">{item}</button>
               ))
             }
             {
@@ -146,6 +161,7 @@ function App(){
                 <button key={item} onClick={ item === '^2' ? handelPower :() => handelClick(item)} className=" bg-darkgray text-center text-white rounded  ">{item}</button>
                 ))
             }
+           
             {
               ['1','2','3'].map((item)=>(
                 <button key={item} onClick={() => handelClick(item)}className=" bg-blue text-center text-white rounded hover:bg-blue-600" >{item}</button>
@@ -153,7 +169,7 @@ function App(){
             }
             {
               ['-','1/x'].map((item)=>(
-                <button key={item} onClick={() => handelClick(item)} className="bg-darkgray text-center text-white rounded ">{item}</button>
+                <button key={item} onClick={ item==='1/x' ? divideOne :() => handelClick(item)} className="bg-darkgray text-center text-white rounded ">{item}</button>
                 ))
             }
             {
@@ -169,9 +185,9 @@ function App(){
             <button onClick={handelResult} className="bg-red  rounded text-white">=</button>
             
           </div>
-
         </div>
       </div>
+  
     
     )
   }
