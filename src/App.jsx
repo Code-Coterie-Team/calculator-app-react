@@ -8,7 +8,7 @@ function App(){
     const [input,setInput]=useState('');
     const [result,setResult]=useState('');
     const [showResult,setShow]=useState(false);
-    
+    const [isGroup,setIsGroup]=useState(false);
     
     const handelClick=(value)=>{
       if (showResult){
@@ -31,32 +31,31 @@ function App(){
     }
 
     const handelPower=()=>{
-        
+        setIsGroup(true);
         const newResult=handelResult();
         const powerResult=Math.pow(newResult,2);
         setResult(powerResult);
-        setInput(String(powerResult));
-
         setShow(true);
           
     }
   
   const divideOne=()=>{
+    setIsGroup(true)
     const newDivide=handelResult();
     const divide=(1/newDivide);
     setResult(divide);
-    setInput(String(divide));
+    setShow(true);
   }
   
   const handelAbsolute=() =>{ 
         
     }
   const sqrtFunction=()=>{
+    setIsGroup(true)
      const newInput=handelResult();
      const sqrtResult=Math.sqrt(newInput);
      setResult(sqrtResult);
-     setInput(String(sqrtResult));
-     setShow(true)
+    setShow(true)
   }
     const handelResult=() =>{
         const inputString= input.match(/(\d+(\.\d+)?|\*|\+|\-|\+|\/)/g).map(item => item.trim());
@@ -96,7 +95,7 @@ function App(){
           const indexSub=array.indexOf('-');
   
           if((indexAdd<indexSub ||indexSub===-1 ) && indexAdd !== -1 ){
-              console.log('s');
+              
               const leftOperand = Number(array[indexAdd- 1]);
               const rightOperand = Number(array[indexAdd + 1]);
               const result = leftOperand + rightOperand;
@@ -123,8 +122,8 @@ function App(){
       
       <div className="flex flex-col gap-12 h-full w-full items-center  p-4">
         <div className="text-center">AJ CalculatorReact js</div>
-        <div className="bg-black h-max min-w-min w-6/12 flex  flex-col p-6  gap-3 items-center "> 
-          <div value={input} className="bg-gray h-12 w-11/12  p-2"> {input} {showResult &&`= ${result}`}
+        <div className="bg-black h-[350px] w-4/12 flex  flex-col p-6  rounded-lg gap-6 items-center "> 
+          <div  className="bg-gray h-12 w-11/12 rounded-md  p-2"> {isGroup ? `(${input})` : input } {showResult &&`= ${result}`}
           </div>
           
           <div className="grid grid-cols-4 w-10/12 gap-3">
@@ -141,7 +140,7 @@ function App(){
             
             {
               ['7','8','9'].map((item) =>(
-                <button key={item} onClick={()=> handelClick(item)} className=" bg-blue text-center text-white rounded  hover: drop-shadow-lg active:bg-red" >{item}</button>
+                <button key={item} onClick={()=> handelClick(item)} className=" bg-blue text-center text-white rounded   hover:shadow-shadowe2  focus:bg-indigo-600" >{item}</button>
               ))
             }
             
@@ -169,7 +168,7 @@ function App(){
             }
             {
               ['-','1/x'].map((item)=>(
-                <button key={item} onClick={ item==='1/x' ? divideOne :() => handelClick(item)} className="bg-darkgray text-center text-white rounded ">{item}</button>
+                <button key={item} onClick={ item ==='1/x' ? divideOne :() => handelClick(item)} className="bg-darkgray text-center text-white rounded ">{item}</button>
                 ))
             }
             {
@@ -186,6 +185,7 @@ function App(){
             
           </div>
         </div>
+        <div className="text-right text-darkgray">2024 ArezooAmiriAyoubloo</div>
       </div>
   
     
